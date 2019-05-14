@@ -13,8 +13,8 @@
 	},
 	"minimum-stability" : "dev",
 	"require" : {
-		"php" : ">=7.2",
-		"doctrine/orm" : "2.5.x-dev",
+		"php" : ">=7.3",
+		"doctrine/orm" : "2.6.x-dev",
 		"doctrine/doctrine-bundle" : "1.9.1",
 		"symfony/swiftmailer-bundle" : "3.2.4",
 		"symfony/monolog-bundle" : "3.3.1",

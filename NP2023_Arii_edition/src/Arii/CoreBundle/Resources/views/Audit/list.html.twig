@@ -1,0 +1,102 @@
+{# src/Arii/CoreBundle/Resources/views/index.html.twig #}
+{% extends "AriiCoreBundle::layout.html.twig" %}
+{% block body %}
+<script language="javascript">
+dhtmlxEvent(window,"load",function(){     
+    globalLayout = new dhtmlXLayoutObject(document.body,"2U");  
+    globalLayout.cells("a").setWidth(355); 
+    globalLayout.cells("a").hideHeader(); 
+    globalLayout.cells("b").hideHeader(); 
+//    globalLayout.cells("c").hideHeader(); 
+//    globalLayout.cells("c").setHeight(260); 
+
+    globalMenu = globalLayout.cells("a").attachMenu();
+    globalMenu.setIconsPath( "{{ asset('/bundles/ariicore/images/menu/') }}" );
+    globalMenu.loadStruct("{{ url('xml_menu') }}?route={{ app.request.attributes.get('_route') }}");
+
+    myRibbon = globalLayout.cells("a").attachRibbon(); 
+    myRibbon.setIconPath( "{{ asset('/bundles/ariicore/images/ribbon/') }}" );
+    myRibbon.loadStruct("{{ url('json_Home_ribbon') }}");
+    myRibbon.attachEvent("onStateChange", StateRibbon );
+    myRibbon.attachEvent("onClick", ClickRibbon );
+
+    BarChart = globalLayout.cells("a").attachChart( {
+        view: "scatter",
+        xValue: "#LOGTIME#",
+        yValue: "#NB#",
+        color: "#COLOR#",
+        item:{
+            label: "",
+            borderColor: "#COLOR#" ,
+            color: "#COLOR#",
+            type: 'r'
+        },
+        yAxis:{
+            title: "{{ "Event" | trans }}(s)"
+        },
+        xAxis:{
+            title: "{{ "Start time" | trans }}",
+            template: ""
+        }
+    });
+    BarChart.load( "{{ url('xml_Home_audit_chart') }}" );
+
+    globalToolbar = globalLayout.cells("b").attachToolbar();
+    globalToolbar.setIconsPath("{{ asset('bundles/ariicore/images/toolbar/') }}");
+    globalToolbar.loadStruct("{{ url('xml_Home_audit_toolbar') }}");
+    globalToolbar.attachEvent( "onClick", function(id, value) {
+        switch (id) {
+            case "refresh":
+            //    GridRefresh();
+            break;
+            default:
+                alert(id);
+        }
+    });
+
+    myGrid = globalLayout.cells("b").attachGrid();
+    myGrid.setImagePath( "{{ asset('bundles/ariicore/images/treegrid/') }}");
+    myGrid.setHeader("{{ "Timestamp" | trans }},{{ "Module" | trans }},{{ "Action" | trans }},{{ "Status" | trans }},{{ "User" | trans }},{{ "IP address" | trans }}");
+    myGrid.attachHeader("#text_filter,#select_filter,#text_filter,#select_filter,#select_filter,#select_filter");
+    myGrid.setInitWidths("150,80,*,100,120,140");
+    myGrid.setColAlign("right,left,left,left,left,right");
+    myGrid.setColTypes("ro,ro,ro,ro,ro,ro");
+    myGrid.setColSorting("date,str,str,str,str,str");
+    myGrid.init();
+    myGrid.load( "{{ url('xml_Home_audit_list') }}" );
+    myGrid.enableLightMouseNavigation( true );
+
+    BarChart.attachEvent("onItemClick", function(id){
+        myGrid.selectRowById(id);
+    });
+
+/*    globalLayout.cells("c").hideHeader();
+    globalLayout.cells("c").attachURL("{{ url('xml_arii_audit_detail') }}",true);
+    myGrid.attachEvent("onRowDblClicked",function(id, value){
+        globalLayout.cells("c").attachURL("{{ url('xml_arii_audit_detail') }}?id="+id,true);
+    });
+*/
+});
+
+function GridRefresh() {
+    var currentTime = new Date();
+    var hours = currentTime.getHours();
+    var minutes = currentTime.getMinutes();
+    var seconds = currentTime.getSeconds();
+    if (minutes < 10){
+    minutes = "0" + minutes;
+    }
+    if (seconds < 10){
+    seconds = "0" + seconds;
+    }
+    
+    globalToolbar.setItemText( "refresh", hours + ":" + minutes + ":" +  seconds );
+    //myGrid.clearAll();
+    var page_number = myGrid.currentPage;
+    myGrid.load( "{{ url('xml_Home_audit_list') }}"+'?time='+seconds,  function(){
+            myGrid.refreshFilters();
+            myGrid.filterByAll();
+        });
+}
+</script>
+{% endblock %}

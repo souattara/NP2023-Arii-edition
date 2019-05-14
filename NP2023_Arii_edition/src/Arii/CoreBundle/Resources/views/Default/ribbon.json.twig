@@ -1,0 +1,82 @@
+{
+   "items":
+   [
+        {   
+            type:       "block", 
+            text:       "{{ "Home" | trans }}", 
+            text_pos:   "top", 
+            list:
+                [
+                   {   
+                        type:   "button", 
+                        id:     "home",
+                        text:   "", 
+                        isbig:  true, 
+                        img:    "48/navigation.png"
+                    },
+                    {   
+                         type:   "button", 
+                         id:     "errors",
+                         text:   "", 
+                         img:    "error.png"
+                    },
+                    {   
+                         type:   "button", 
+                         id:     "audit",
+                         text:   "", 
+                         img:    "shield.png"
+                    }
+/* 
+                    ,
+                    {   
+                         type:   "buttonSelect", 
+                         id:     "screen",
+                         text:   "", 
+                         img:    "2.gif",
+                         items: [
+                            {   id:  "2",
+                                text: "{{ "Description" | trans }}",
+                                img: "2.gif"
+                            },
+                            {   id:  "4",
+                                text: "{{ "Summary" | trans }}",
+                                img: "4.gif"
+                            },
+                            {   id:  "8",
+                                text: "{{ "Only icons" | trans }}",
+                                img: "8.gif"
+                            }
+                         ]
+                    }
+*/
+                ]
+        },
+        {   
+            type:       "block", 
+            text:       "{{ "My account" | trans }}", 
+            text_pos:   "bottom", 
+            list:
+                [
+                   {   
+                        type:   "button", 
+                        id:     "my_account",
+                        text:   "", 
+                        isbig:  true, 
+                        img:    "48/me.png"
+                    },
+                    {   
+                         type:   "button", 
+                         id:     "profile",
+                         text:   "", 
+                         img:    "user_edit.png"
+                    },
+                    {   
+                         type:   "button", 
+                         id:     "filter",
+                         text:   "", 
+                         img:    "filter_add.png"
+                    }                         
+                ]
+        }
+   ]
+}

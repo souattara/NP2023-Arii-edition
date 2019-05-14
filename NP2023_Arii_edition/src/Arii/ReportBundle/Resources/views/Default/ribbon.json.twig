@@ -1,0 +1,32 @@
+{
+   "items":
+   [
+      {   "type":"block", 
+          text:"{{ "module.Report" | trans }}", 
+          "text_pos": "top", 
+          "list":
+          [
+             {   "type": "button", 
+                 text:"", 
+                 "isbig": true, 
+                 "img": "48/report.png"
+             },
+             {   type:  "buttonSelect", 
+                 text:  "", 
+                 img:   "table.png", 
+                 items:
+                 [ 
+{% for k,request in Requests %}
+                    { id:"request_{{ request.id }}", text: "{{ request.title }}", img: "{{ request.icon }}.png" },
+{% endfor %}                 
+                 ]
+              },
+             {  type: "button", 
+                id:   "import",
+                text: "", 
+                img:  "import.png"
+             }
+          ]
+      }  
+   ]
+}

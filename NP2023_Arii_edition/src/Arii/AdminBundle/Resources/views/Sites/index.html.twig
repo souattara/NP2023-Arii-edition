@@ -1,0 +1,284 @@
+{% extends "AriiAdminBundle::layout.html.twig" %}
+{% block body %}
+<script language="javascript">
+dhtmlxEvent(window,"load",function() {
+
+    globalLayout = new dhtmlXLayoutObject(document.body,"3L");  
+    globalLayout.cells("a").setWidth(410); 
+    globalLayout.cells("a").hideHeader(); 
+    globalLayout.cells("b").hideHeader(); 
+
+    globalMenu = globalLayout.cells("a").attachMenu();
+    globalMenu.setIconsPath( "{{ asset('/bundles/ariicore/images/menu/') }}" );
+    globalMenu.loadStruct("{{ url('xml_menu') }}?route={{ app.request.attributes.get('_route') }}");
+
+    myRibbon = globalLayout.cells("a").attachRibbon(); 
+    myRibbon.setIconPath( "{{ asset('/bundles/ariicore/images/ribbon/') }}" );
+    myRibbon.loadStruct("{{ url('json_Admin_ribbon') }}");
+    myRibbon.attachEvent("onStateChange", StateRibbon );
+    myRibbon.attachEvent("onClick", ClickRibbon );
+
+    myTree = globalLayout.cells("a").attachTree();
+    myTree.setImagesPath("{{ asset('bundles/ariicore/images/tree/') }}");
+    myTree.load( "{{ url('xml_Admin_zones_tree') }}" );
+    myTree.enableDragAndDrop(true, false);
+    myTree.attachEvent("onClick",function(id){
+        globalLayout.cells("b").progressOn();
+        myGrid.clearAll();
+        myGrid.load("{{ url('xml_Admin_sites_grid') }}?id="+id, function() {
+            globalLayout.cells("b").progressOff();
+        });
+    })    
+
+    myGridMenu = new dhtmlXMenuObject();
+    myGridMenu.setIconsPath( "{{ asset('arii/images/menu/') }}" );
+    myGridMenu.renderAsContextMenu();
+    myGridMenu.attachEvent("onClick", onMenuClick);
+    myGridMenu.loadStruct("{{ url('xml_Admin_sites_menu') }}");
+
+    myGridToolbar = globalLayout.cells("b").attachToolbar();
+    myGridToolbar.setIconsPath("{{ asset('bundles/ariicore/images/toolbar/') }}");
+    myGridToolbar.loadStruct("{{ url('xml_Admin_site_toolbar') }}", function () {});
+    myGridToolbar.attachEvent("onClick",onClick);
+
+    myGrid = globalLayout.cells("b").attachGrid();
+    myGrid.selMultiRows = true;
+    myGrid.setImagePath("{{ asset('arii/images/treegrid/') }}");
+    myGrid.setHeader("{{ "Site"| trans }},{{ "Description"| trans }},{{ "Address"| trans }},{{ "Zip code"| trans }},{{ "City"| trans }},{{ "Latitude"| trans }},{{ "Longitude"| trans }}");
+    myGrid.setInitWidths("200,*,200,100,200,120,120");
+    myGrid.setColAlign("left,left,left,left,left,left,left");
+    myGrid.setColTypes("ro,ro,ro,ro,ro,ro,ro");
+    myGrid.enableContextMenu(myGridMenu);
+    myGrid.load("{{ url('xml_Admin_sites_grid') }}");
+    myGrid.init();
+    
+    var myDataprocessor = new dataProcessor("{{ url('xml_Admin_sites_grid') }}"); 
+    myDataprocessor.setTransactionMode("POST",true); 
+    myDataprocessor.setUpdateMode("off");
+    myDataprocessor.init(myGrid);
+
+    myGrid.attachEvent("onRowDblClicked", function (rid) {
+        Edit(rid);
+    });
+
+    formData = [
+        { type: "settings", position: "label-left", labelWidth: 120, inputWidth: 200,labelAlign: "left",noteWidth: 200 },
+        {type: "hidden",name: "id"},         
+        { type: "input",
+          name: "name",
+          label: "{{ "Site Name"| trans }}",
+          required: true,
+          note: {
+              text: "{{ "site.name.note" | trans }}"
+          }
+        },
+        { type: "input",
+          name: "country_code",
+          label: "{{ "Country code"| trans }}",
+          note: {
+              text: "{{ "site.country_code.note" | trans }}"
+          }
+        },
+        { type: "input",
+          rows: 3,
+          name: "description",
+          label: "{{ "Description"| trans }}",
+          note: {
+              text: "{{ "site.description.note" | trans }}"
+          }
+        },
+        { type: "newcolumn" },
+        { type: "input",
+          name: "address",
+          rows: 2,          
+          label: "{{ "Address"| trans }}",
+          note: {
+              text: "{{ "site.address.note" | trans }}"
+          }
+        },
+        { type: "input",
+          name: "zipcode",
+          label: "{{ "ZIP Code"| trans }}",
+          note: {
+              text: "{{ "site.zipcode.note" | trans }}"
+          }
+        },
+        { type: "input",
+          name: "city",
+          label: "{{ "City"| trans }}",
+          note: {
+              text: "{{ "site.city.note" | trans }}"
+          }
+        },            
+        { type: "newcolumn" },
+         {  type: "select",
+            name: "ZONE_ID",
+            label: "{{ "Zone"| trans }}",
+            connector: "{{ url('xml_Admin_zones_select') }}"
+         },
+        { type: "input",
+          name: "timezone",
+          label: "{{ "Timezone"| trans }}",
+          note: {
+              text: "{{ "site.timezone.note" | trans }}"
+          }
+        },
+        { type: "input",
+          name: "latitude",
+          label: "{{ "Latitude"| trans }}",
+          note: {
+              text: "{{ "site.latitude.note" | trans }}"
+          }
+        },
+        { type: "input",
+          name: "longitude",
+          label: "{{ "Longitude"| trans }}",
+          note: {
+              text: "{{ "site.longitude.note" | trans }}"
+          }
+        }
+    ];
+
+    myTabbar = globalLayout.cells("c").attachTabbar();
+    myTabbar.addTab("b1","{{ "Data" | trans }}","200px",null,true);
+    myTabbar.addTab("b2","{{ "Map" | trans }}","200px");
+
+    myFormToolbar = globalLayout.cells("c").attachToolbar();
+    myFormToolbar.setIconsPath("{{ asset('bundles/ariicore/images/toolbar/') }}");
+    myFormToolbar.loadStruct("{{ url('xml_Admin_site_toolbar') }}", function () {});
+    myFormToolbar.attachEvent("onClick",onClick);
+
+    myForm = myTabbar.cells("b1").attachForm(formData);
+    myForm.enableLiveValidation(true);
+    {%if id != '' %}
+    myForm.load("{{ url('xml_Admin_repository_form') }}?id="+"{{ id }}" );
+    {%endif%}
+
+    var customparams = {
+        center: new google.maps.LatLng(40.719837,-73.992348),
+        zoom: 18,
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+    GMaps = myTabbar.cells("b2").attachMap(customparams);
+});
+    
+function onClick(id){
+    switch (id){
+        case "add":
+            New();
+            break;
+        case "edit":
+            id = myForm.getItemValue("id");
+            Edit(id);
+            break;
+        case "save":
+            if(!myForm.validate())
+            {
+                dhtmlx.message({
+                    title:"Error",
+                    type: "error",
+                    lifetime: "60000",
+                    text: "{{ "Please type in all the required fields!" | trans }}"
+                 });
+                return;
+            }
+            globalLayout.cells("b").progressOn();
+            myForm.send("{{ url('xml_Admin_site_save') }}","POST",function(loader,response){
+                if(response === "success")
+                {
+                 dhtmlx.message({
+                    title:"Save",
+                    type: "Notice",
+                    lifetime: "60000",
+                    text: "{{ "site.message.save" | trans }}"
+                 });
+                 GridRefresh();
+                 globalLayout.cells("b").progressOff();
+               }
+               else 
+               {
+                   alert(response);
+                   globalLayout.cells("b").progressOff();
+               }
+            });
+            break;
+        default:
+            break;
+    }
+}
+
+function onMenuClick(menuitemId, type)
+{
+    var rid = myGrid.contextID.split("_")[0];
+    switch(menuitemId){
+        case "add":
+            New();
+            break;
+        case "edit":
+            Edit(rid);
+            break;
+        case "delete":
+            Delete(rid);
+            break;
+        default:
+            alert(menuitemId);
+    }
+    return true;
+}
+
+function GridRefresh()
+{
+    //myGrid.loadXML("{{ url('xml_Admin_sites_grid') }}");
+    myGrid.loadXML("{{ url('xml_Admin_sites_show') }}");
+    // for the grid, which use the connector to render_sql or render_table to init, we can set config in the controller, then the grid can refresh properly!
+}
+
+function New() {
+    myForm.clear();
+    myForm.setItemFocus("scheduler_id");
+    myForm.setItemLabel("fieldset","{{ "New site" | trans }}");
+    myFormToolbar.hideItem("delete");
+}
+
+function Edit(id) {
+    globalLayout.cells("c").progressOn();
+    myFormToolbar.showItem("delete");
+    myForm.clear();
+    myForm.load("{{ url('xml_Admin_site_form') }}?id="+id, function () {
+        globalLayout.cells("c").progressOff();
+        RefreshMap( myForm.getItemValue("latitude"), myForm.getItemValue("longitude"), myForm.getItemValue("name"));
+    });
+}
+
+function RefreshMap( Lat, Long, Site) {
+  var latLng = new google.maps.LatLng( Lat, Long); // Correspond au coordonnées de Lille
+ 
+   var marker = new google.maps.Marker({
+    position : latLng,
+    map      : GMaps,
+    title    : Site
+    //icon     : "marker_lille.gif" // Chemin de l'image du marqueur pour surcharger celui par défaut
+  });
+    GMaps.panTo(latLng);   
+}
+
+function Delete(id) {
+        dhtmlx.confirm({
+        title: "{{ "Delete site" | trans }}",
+        type: "confirm-error",
+        text: "{{ "site.message.delete" | trans }}",
+        callback: function(answer) { if (answer) {
+                globalLayout.cells("a").progressOn();
+                dhtmlxAjax.get("{{ url('xml_Admin_site_delete') }}?id="+id,function(loader){
+                    myGrid.deleteRow(id);
+                }); 
+            }
+        },
+        cancel: "{{ "No" | trans }}",
+        ok: "{{ "Yes" | trans }}" });
+        GridRefresh();
+}
+function GlobalRefresh() {
+}
+</script>
+{% endblock %}

@@ -1,0 +1,47 @@
+{
+   "items":
+   [
+      {   "type":"block", 
+          text:"{{ "module.Admin" | trans }}", 
+          "text_pos": "top", 
+          "list":
+          [
+             {  type: "button", 
+                id: 'index',
+                 text:"", 
+                 "isbig": true, 
+                 "img": "48/admin.png"
+              },
+             {   "type": "buttonSelect", 
+                 text:"", 
+                 "img": "config.png", 
+                 items:
+                 [ 
+                    { id:"categories", text: "{{ "Categories" | trans }}", img: "categories.png" },   
+                    { id:"connections", text: "{{ "Connections" | trans }}", img: "connect.png" },
+                    { id:"sites", text: "{{ "Sites" | trans }}", img: "world.png" },
+                 ]
+              },
+             {   "type": "buttonSelect", 
+                 text: "", 
+                 "img": "server.png", 
+                 items:
+                 [ 
+                    { id:"databases", text: "{{ "Repositories" | trans }}", img: "database.png" },
+                    { id:"spoolers", text: "{{ "Spoolers" | trans }}", img: "spooler.png" },
+                    { id:"nodes", text: "{{ "Nodes" | trans }}", img: "agent.png" }    
+                 ]
+              },
+             {   "type": "buttonSelect", 
+                 text:"", 
+                 "img": "group.png", 
+                 items:
+                 [ 
+                    { id:"users", text: "{{ "Users" | trans }}", img: "user.png" },
+                    { id:"teams", text: "{{ "Teams" | trans }}", img: "group.png" }
+                 ]
+              }
+          ]
+      }
+   ]
+}

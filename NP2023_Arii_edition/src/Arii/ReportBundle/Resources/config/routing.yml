@@ -1,0 +1,150 @@
+arii_Report_index:
+    path:  /
+    defaults: { _controller: AriiReportBundle:Default:index }
+
+arii_Report_readme:
+    path:  /readme
+    defaults: { _controller: AriiReportBundle:Default:readme }
+
+xml_Report_tree:
+    path:  /tree.xml
+    defaults: { _controller: AriiReportBundle:Default:tree }
+
+xml_Report_form:
+    path:  /form.xml
+    defaults: { _controller: AriiReportBundle:Default:info }
+
+xml_Report_view:
+    path:  /view.xml
+    defaults: { _controller: AriiReportBundle:Default:doc }
+    
+json_Report_ribbon:
+    path:  /ribbon.json
+    defaults: { _controller: AriiReportBundle:Default:ribbon }
+
+arii_Report_documents:
+    path:  /documents
+    defaults: { _controller: AriiReportBundle:Documents:index }
+
+xml_Report_documents_toolbar:
+    path:  /documents/toolbar.xml
+    defaults: { _controller: AriiReportBundle:Documents:toolbar }
+
+arii_Report_document:
+    path:  /document
+    defaults: { _controller: AriiReportBundle:Document:doc }
+
+arii_Report_document_get:
+    path:  /document/get
+    defaults: { _controller: AriiReportBundle:Document:get }
+
+xml_Report_document_toolbar:
+    path:  /document/toolbar.xml
+    defaults: { _controller: AriiReportBundle:Document:toolbar }
+
+arii_Report_status:
+    path:  /status
+    defaults: { _controller: AriiReportBundle:Default:status }
+    
+arii_Report_history:
+    path:  /history
+    defaults: { _controller: AriiReportBundle:Default:history }
+
+xml_Report_grid:
+    path:  /grid.xml
+    defaults: { _controller: AriiReportBundle:Orders:grid }
+
+xml_Report_docs:
+    path:  /documents/grid.xml
+    defaults: { _controller: AriiReportBundle:Documents:grid }
+
+# --------------------------------------------------------------------------
+# REQUESTS
+# --------------------------------------------------------------------------
+arii_Report_requests:
+    path:  /requests
+    defaults: { _controller: AriiReportBundle:Requests:index }
+
+xml_Report_requests_list:
+    path:  /requests/list.xml
+    defaults: { _controller: AriiReportBundle:Requests:list }
+
+xml_Report_requests_toolbar:
+    path:  /requests/toolbar.xml
+    defaults: { _controller: AriiReportBundle:Requests:toolbar }
+    
+arii_Report_requests_result:
+    path:  /requests/result.html
+    defaults: { _controller: AriiReportBundle:Requests:result }
+
+arii_Report_requests_summary:
+    path:  /requests/summary.html
+    defaults: { _controller: AriiReportBundle:Requests:summary }
+
+#================================================================
+# IMPORT
+#================================================================
+arii_Report_import:
+    path:  /import
+    defaults: { _controller: AriiReportBundle:Import:index }
+
+html_Report_import:
+    path:  /import.html
+    defaults: { _controller: AriiReportBundle:Import:get }
+
+#================================================================
+# JASPER
+#================================================================
+arii_Report_jasper:
+    path:  /jasper
+    defaults: { _controller: AriiReportBundle:Documents:index }
+
+#----------------------------------------------------------------
+# PROCESS
+#----------------------------------------------------------------
+arii_Report_process:
+    path:  /process
+    defaults: { _controller: AriiReportBundle:Process:index }
+
+xml_Report_process_tree:
+    path:  /process/tree.xml
+    defaults: { _controller: AriiReportBundle:Process:tree }
+
+xml_Report_process_orders:
+    path:  /process/orders.xml
+    defaults: { _controller: AriiReportBundle:Process:orders }
+    
+#----------------------------------------------------------------
+# EDIT
+#----------------------------------------------------------------
+arii_Report_edit:
+    path:  /edit
+    defaults: { _controller: AriiReportBundle:Edit:index }
+
+xml_Report_edit_tree:
+    path:  /edit/tree.xml
+    defaults: { _controller: AriiReportBundle:Edit:tree }
+
+html_Report_edit_sql:
+    path:  /edit/sql.html
+    defaults: { _controller: AriiReportBundle:Edit:sql }
+
+#----------------------------------------------------------------
+# IPAM
+#----------------------------------------------------------------
+arii_Report_ipam:
+    path:  /ipam
+    defaults: { _controller: AriiReportBundle:IPAM:index }
+    
+html_Report_ipam_get:
+    path:  /ipam/get.html
+    defaults: { _controller: AriiReportBundle:IPAM:get }
+
+xml_Report_ipam_grid:
+    path:  /ipam/grid.xml
+    defaults: { _controller: AriiReportBundle:IPAM:grid }
+
+html_Report_ipam_pop:
+    path:  /ipam/pop.html
+    defaults: { _controller: AriiReportBundle:IPAM:pop }
+    

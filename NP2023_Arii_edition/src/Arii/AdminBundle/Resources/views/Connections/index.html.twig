@@ -1,0 +1,233 @@
+{% extends "AriiAdminBundle::layout.html.twig" %}
+{% block body %}
+<script language="javascript">
+dhtmlxEvent(window,"load",function(){  
+        
+    globalLayout = new dhtmlXLayoutObject(document.body,"3L");  
+    globalLayout.cells("a").setWidth(350); 
+    globalLayout.cells("a").hideHeader(); 
+    globalLayout.cells("b").hideHeader(); 
+    globalLayout.cells("c").setText("{{ "Detail" | trans }}"); 
+    globalLayout.cells("c").collapse(); 
+
+    globalMenu = globalLayout.cells("a").attachMenu();
+    globalMenu.setIconsPath( "{{ asset('/bundles/ariicore/images/menu/') }}" );
+    globalMenu.loadStruct("{{ url('xml_menu') }}?route={{ app.request.attributes.get('_route') }}");
+
+    myRibbon = globalLayout.cells("a").attachRibbon(); 
+    myRibbon.setIconPath( "{{ asset('/bundles/ariicore/images/ribbon/') }}" );
+    myRibbon.loadStruct("{{ url('json_Admin_ribbon') }}");
+    myRibbon.attachEvent("onStateChange", StateRibbon );
+    myRibbon.attachEvent("onClick", ClickRibbon );    
+    
+    myMenu = new dhtmlXMenuObject();
+    myMenu.setIconsPath( "{{ asset('/bundles/ariicore/images/menu/') }}" );
+    myMenu.renderAsContextMenu();
+    myMenu.attachEvent("onClick", onMenuClick);
+    myMenu.loadStruct("{{ url('xml_Admin_connections_menu') }}");
+
+    myGrid = globalLayout.cells("b").attachGrid();
+    myGrid.setImagePath("{{ asset('arii/images/treegrid/') }}");
+    
+    myGrid.setHeader("{{ "Category"| trans }},{{ "Title"| trans }},{{ "Description"| trans }},{{ "Host"| trans }},{{ "Interface"| trans }},{{ "Port"| trans }},{{ "Protocol"| trans }},{{ "Login"| trans }},{{ "Env"| trans }}");
+    myGrid.attachHeader("#select_filter,#text_filter,#text_filter,#text_filter,#select_filter,#select_filter,#text_filter,#text_filter,#select_filter");
+    myGrid.setInitWidths("200,200,*,200,150,80,80,200,80");
+    myGrid.setColAlign("left,left,left,left,left,right,center,left,left");
+    myGrid.setColTypes("ro,ro,ro,ro,ro,ro,ro,ro,ro");
+    myGrid.enableContextMenu(myMenu);
+    myGrid.enableLightMouseNavigation( true );
+    myGrid.load("{{ url('xml_Admin_connections_grid') }}");
+    myGrid.enableDragAndDrop(true);
+    myGrid.init();
+    myGrid.attachEvent("onRowDblClicked", function (rid) {
+        Edit(rid);
+    });
+
+    myTree = globalLayout.cells("a").attachTree();
+    myTree.setImagesPath("{{ asset('bundles/ariicore/images/tree/') }}");
+    myTree.load( "{{ url('xml_Admin_categories_tree') }}" );
+    myTree.enableDragAndDrop(true, false);
+    myTree.attachEvent("onClick",function(id){
+        globalLayout.cells("b").progressOn();
+        myGrid.clearAll();
+        myGrid.load("{{ url('xml_Admin_connections_grid') }}?category="+id, function() {
+            globalLayout.cells("b").progressOff();
+        });
+    })    
+
+    formData = [
+        { type: "settings", position: "label-left", labelWidth: 70, inputWidth: 300,labelAlign: "right" },
+        { type: "hidden",
+          name: "id"
+        },         
+        {  type: "input",
+            name: "TITLE",
+            label: "{{ "Title" | trans }}",
+            required: true,
+            note: 
+              {  text: "{{ "connection.title.note" | trans }}"
+              }
+         },
+         {  type: "select",
+            name: "CATEGORY_ID",
+            label: "{{ "Category"| trans }}",
+            connector: "{{ url('xml_Admin_categories_select') }}"
+         },
+         {  type: "input",
+            name: "DESCRIPTION",
+            label: "{{ "Description"| trans }}",
+            rows: 2,
+            note: {  text: "{{ "connection.description.note" | trans }}"
+            }
+         },
+         {  type: "input",
+            name: "HOST",
+            label: "{{ "Host"| trans }}",
+            note: 
+              {  text: "{{ "connection.host.note" | trans }}"
+              }
+        },
+         {  type: "newcolumn" },
+         {  type: "input",
+            name: "INTERFACE",
+            label: "{{ "Interface"| trans }}",
+            note: 
+              {  text: "{{ "connection.interface.note" | trans }}"
+              }
+        },
+         {  type: "input",
+            name: "PORT",
+            label: "{{ "Port"| trans }}",
+            note: 
+              {  text: "{{ "connection.port.note" | trans }}"
+              }
+        },
+         {  type: "input",
+            name: "LOGIN",
+            label: "{{ "Login"| trans }}",
+            note: 
+              {  text: "{{ "connection.login.note" | trans }}"
+              }
+        },
+         {  type: "input",
+            name: "PASSWORD",
+            label: "{{ "Password"| trans }}",
+            note: 
+              {  text: "{{ "connection.host.note" | trans }}"
+              }
+        },
+         
+    ];
+    myForm = globalLayout.cells("c").attachForm(formData);
+    myForm.enableLiveValidation(true);
+    
+    myToolbar = globalLayout.cells("c").attachToolbar();
+    myToolbar.setIconsPath("{{ asset('bundles/ariicore/images/toolbar/') }}");
+    myToolbar.loadStruct("{{ url('xml_Admin_connection_toolbar') }}", function () {
+        myToolbar.hideItem("delete_connection");
+    });
+    myToolbar.attachEvent("onClick",onClick);
+    
+});
+
+function onClick(id){
+    switch (id){
+        case "add":
+            New();
+            break;
+        case "delete":
+            id = myForm.getItemValue("id");
+            Delete(id);
+            break;
+        case "save":
+            if(!myForm.validate())
+            {
+                dhtmlx.message({
+                    title:"Error",
+                    type: "error",
+                    lifetime: "60000",
+                    text: "{{ "Please type in all the required fields!" | trans }}"
+                 });
+                return;
+            }
+            globalLayout.cells("b").progressOn();
+            myForm.send("{{ url('xml_Admin_connection_save') }}","POST",function(loader,response){
+                globalLayout.cells("b").progressOff();
+                if(response === "success")
+               {
+                 dhtmlx.message({
+                    title:"Save",
+                    type: "Notice",
+                    lifetime: "60000",
+                    text: "Saved"
+                 });
+                 myForm.setItemFocus("title");
+                 GridRefresh();
+               }
+               else 
+               {
+                   alert(response);
+               }               
+            });
+        break;
+        default:
+            alert(id);
+            break;
+    }
+}
+
+function onMenuClick(myMenuitemId, type)
+{
+    var rid = myGrid.contextID.split("_")[0];
+    switch(myMenuitemId){
+        case "add":
+            New();
+            break;
+        case "edit":
+            Edit(rid);
+            break;
+        case "delete":
+            Delete(rid);
+            break;
+        default:
+            alert(myMenuitemId);
+    }
+    return true;
+}
+
+function GridRefresh()
+{
+    myGrid.clearAll();
+    myGrid.load("{{ url('xml_Admin_connections_grid') }}");
+}
+
+function New() {
+    myForm.clear();
+    myForm.setItemFocus("name");
+    myToolbar.hideItem("delete");
+}
+
+function Edit(id) {
+    globalLayout.cells("c").expand();
+    globalLayout.cells("c").progressOn();
+    myToolbar.showItem("delete");
+    myForm.clear();
+    myForm.load("{{ url('xml_Admin_connection_form') }}?id="+id, function () {
+        globalLayout.cells("c").progressOff();
+    });
+}
+
+function Delete(id) {
+    dhtmlx.confirm({
+    title: "{{ "Delete" | trans }}",
+    type: "confirm-error",
+    text: "{{ "Are you sure ?" | trans }}",
+    callback: function(answer) { if (answer) myGrid.deleteRow(rid); },
+    cancel: "{{ "No" | trans }}",
+    ok: "{{ "Yes" | trans }}" });
+}
+
+function GlobalRefresh() {};
+</script>
+
+{% endblock %}

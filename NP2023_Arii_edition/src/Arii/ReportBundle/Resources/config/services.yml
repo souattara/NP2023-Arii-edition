@@ -1,0 +1,14 @@
+parameters:
+#    arii_report.example.class: Arii\ReportBundle\Example
+
+services:
+#    arii_report.example:
+#        class: %arii_report.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]
+    report_import.ezv:
+        class: Arii\ReportBundle\Service\ImportEZV
+        arguments: [  "@doctrine.orm.entity_manager", "%Report%" ]
+
+    report_import.ipam:
+        class: Arii\ReportBundle\Service\ImportIPAM
+        arguments: [  "@doctrine.orm.entity_manager", "%Report%" ]

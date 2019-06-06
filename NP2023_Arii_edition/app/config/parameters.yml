@@ -13,11 +13,11 @@ parameters:
     secret: 8cfa2bd0b50b7db00e9c186be68f7ce7465123d3
     site_name: Paris
     arii_modules: 'JID(ROLE_USER),DS(ROLE_USER),GVZ(ROLE_USER),JOC(ROLE_OPERATOR),Report(ROLE_ADMIN),Admin(ROLE_ADMIN)'
-    workspace: 'D:/Apps/Arii_NP2023/Symfony/workspace'
+    workspace: '{ARII_WORKSPACE}'
     packages: '%workspace%/packages'
     perl: perl
-    java: 'C:/Program Files/Java/jre1.8.0_144'
-    ditaa: /home/arii/Symfony/vendor/ditaa
+    java: '{JAVA_HOME}'
+    ditaa: {ARII_DITAA]
     plantuml: plantuml/plantuml.jar
     databases:
         -
@@ -57,8 +57,8 @@ parameters:
                     cmd: null
                     user: arii
                     host: localhost
-                    home: 'D:/Apps/Arii_NP2023/jobscheduler/sospcli001_4444'
-                    data: 'D:/Apps/Arii_NP2023/jobscheduler/sospcli001_4444'
+                    home: '{ARII_SPOOLER_HOME}'
+                    data: '{ARII_SPOOLER_DATA}'
                 rest:
                     host: localhost
                     port: 4444
@@ -108,7 +108,7 @@ parameters:
                     port: 5555
                     protocol: http
                     path: null
-    graphviz_dot: 'D:/Apps/Arii_NP2023/graphviz-2.38/release/bin/dot.exe'
+    graphviz_dot: '{GRAPHVIZ_DOT_EXE}'
     ats_doc: '/doc/{locale}/Jobs Autosys/{JOB}.job.yml'
     charset: UTF-8
     color_status:

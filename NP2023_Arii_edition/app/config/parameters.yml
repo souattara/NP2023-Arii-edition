@@ -16,8 +16,8 @@ parameters:
     workspace: '{ARII_WORKSPACE}'
     packages: '%workspace%/packages'
     perl: perl
-    java: '{JAVA_HOME}'
-    ditaa: '{ARII_DITAA}'
+    java: {JAVA_HOME}
+    ditaa: {ARII_DITAA}
     plantuml: plantuml/plantuml.jar
     databases:
         -
@@ -57,8 +57,8 @@ parameters:
                     cmd: null
                     user: arii
                     host: localhost
-                    home: '{ARII_SPOOLER_HOME}'
-                    data: '{ARII_SPOOLER_DATA}'
+                    home: {ARII_SPOOLER_HOME}
+                    data: {ARII_SPOOLER_DATA}
                 rest:
                     host: localhost
                     port: 4444
@@ -108,7 +108,7 @@ parameters:
                     port: 5555
                     protocol: http
                     path: null
-    graphviz_dot: '{GRAPHVIZ_DOT_EXE}'
+    graphviz_dot: {GRAPHVIZ_DOT_EXE}
     ats_doc: '/doc/{locale}/Jobs Autosys/{JOB}.job.yml'
     charset: UTF-8
     color_status:

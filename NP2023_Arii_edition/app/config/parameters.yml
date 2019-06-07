@@ -17,7 +17,7 @@ parameters:
     packages: '%workspace%/packages'
     perl: perl
     java: '{JAVA_HOME}'
-    ditaa: {ARII_DITAA]
+    ditaa: '{ARII_DITAA}'
     plantuml: plantuml/plantuml.jar
     databases:
         -

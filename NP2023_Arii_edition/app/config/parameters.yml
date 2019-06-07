@@ -13,7 +13,7 @@ parameters:
     secret: 8cfa2bd0b50b7db00e9c186be68f7ce7465123d3
     site_name: Paris
     arii_modules: 'JID(ROLE_USER),DS(ROLE_USER),GVZ(ROLE_USER),JOC(ROLE_OPERATOR),Report(ROLE_ADMIN),Admin(ROLE_ADMIN)'
-    workspace: '{ARII_WORKSPACE}'
+    workspace: {ARII_WORKSPACE}
     packages: '%workspace%/packages'
     perl: perl
     java: {JAVA_HOME}

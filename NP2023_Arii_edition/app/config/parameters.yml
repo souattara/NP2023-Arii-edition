@@ -61,7 +61,7 @@ parameters:
                     data: {ARII_SPOOLER_DATA}
                 rest:
                     host: localhost
-                    port: 4444
+                    port: 44444
                     protocol: http
                     path: null
         -
